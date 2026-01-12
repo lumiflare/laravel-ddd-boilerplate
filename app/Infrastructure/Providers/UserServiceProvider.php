@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Providers;
 
-use Override;
 use App\Domain\User\Repository\UserRepositoryInterface;
 use App\Infrastructure\User\Repository\EloquentUserRepository;
 use Illuminate\Support\ServiceProvider;
+use Override;
 
 final class UserServiceProvider extends ServiceProvider
 {

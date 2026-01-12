@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\UserInterface\User\Resource;
 
-use Override;
 use app\Application\User\DTO\Output\UserOutput;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Override;
 
 /**
  * @property UserOutput $resource
