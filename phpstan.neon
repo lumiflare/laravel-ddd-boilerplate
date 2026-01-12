@@ -1,0 +1,13 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - app
+    excludePaths:
+        - vendor
+        - tests
+    level: 8
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        - '#Unsafe usage of new static#'
