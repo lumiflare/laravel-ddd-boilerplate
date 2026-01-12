@@ -1,59 +1,123 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel DDD Boilerplate
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+このプロジェクトは、ドメイン駆動設計 (DDD)の原則に基づいて構造化されたLaravelアプリケーションを構築するためのボイラープレートです。堅牢でスケーラブル、かつ保守性の高いアプリケーションを開発できるよう、クリーンなアーキテクチャ基盤を提供することを目的としています。
 
-## About Laravel
+## アーキテクチャとディレクトリ構造
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+このボイラープレートは、ドメイン駆動設計（DDD）の原則に基づいたレイヤードアーキテクチャを採用しています。各レイヤーは明確な責務を持ち、関心事を分離することで、保守性と拡張性の高いコードベースを目指します。
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 1. ドメイン層 (Domain Layer)
 
-## Learning Laravel
+全てのビジネスロジックとドメイン固有のコードを格納するための専用レイヤーです。このレイヤーはフレームワークから独立しており、ビジネスルールにのみ焦点を当てています。
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+-   **目的**: ビジネスのルール、知識、状態を純粋なPHPコードで表現すること。
+-   **場所**: `app/Domain`
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+-   **`Entities` (エンティティ)**: ビジネスオブジェクトとその固有のロジックを表す中心的なクラス。通常、ビジネスドメインに関連する状態と振る舞いの両方を含みます。
+-   **`Value Objects` (値オブジェクト)**: 概念的なアイデンティティを持たず、ドメインの記述的な側面を表す不変のオブジェクト（例: `Money`, `Address`）。
+-   **`Domain Services` (ドメインサービス)**: エンティティや値オブジェクトに自然に収まらないドメインロジックをカプセル化するステートレスなサービス。
+-   **`Domain Events` (ドメインイベント)**: ドメインで発生した重要な出来事を表すイベント。アプリケーションの異なる部分で、疎結合な方法で副作用を引き起こすために使用されます。
+-   **`Repositories` (リポジトリ)**: ドメイン層がインフラストラクチャ層からデータを取得する方法の抽象化。関心事の分離を保証します。
+-   **`Factories` (ファクトリ)**: 複雑なドメインオブジェクトを生成するために使用されるクラスやメソッド。
+-   **`Policies` (ポリシー)**: ビジネスルールや決定を表すクラスやメソッド。
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 2. アプリケーション層 (Application Layer)
 
-### Premium Partners
+ドメイン層とインフラストラクチャ層の間の架け橋として機能し、全てのアプリケーションロジックを含みます。このレイヤーは、アプリケーションフローを駆動します。
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+-   **目的**: アプリケーション固有のワークフロー（ユースケース）を定義し、ドメインロジックをオーケストレーションすること。
+-   **場所**: `app/Application`
 
-## Contributing
+-   **`UseCases` (ユースケース)**: 個々のユースケースを実装するクラス。アプリケーションの具体的なタスクや操作をカプセル化します。
+-   **`DTO (Data Transfer Object)`**: レイヤー間でデータを転送するためのシンプルなオブジェクト。ドメインモデルを外部に公開しないようにします。
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+### 3. ユーザーインターフェース層 (User Interface Layer)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+ユーザー（または他のシステム）との入出力を担当します。Webアプリケーションでは、主にHTTPリクエストの受付とレスポンスの返却が役割です。*（注: 広義のアプリケーション層の一部と見なされることもあります）*
 
-## Security Vulnerabilities
+- **目的**: 外部からのリクエストを解釈し、アプリケーション層の適切なユースケースを呼び出し、結果を適切な形式（JSON, HTMLなど）で返すこと。
+- **場所**: `app/UserInterface`
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- **`Controller` (コントローラー)**: HTTPリクエストを受け、`Request`オブジェクトからデータを抽出し、適切な`UseCase`を呼び出します。
+- **`Middleware` (ミドルウェア)**: HTTPリクエストがアプリケーションに到達する前のフィルタリングや処理を行います。
+- **`Request` (リクエスト)**: 入力値のバリデーションルールを定義するクラス。
+- **`Resource` (リソース)**: `UseCase`から返された`DTO`やドメインオブジェクトを、APIのJSONレスポンス形式に変換します。
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 4. インフラストラクチャ層 (Infrastructure Layer)
+
+ドメイン層で定義されたインターフェース（リポジトリや外部サービスなど）の実装を含みます。データベースや外部システムとのやり取りを行うレイヤーです。
+
+- **目的**: 外部ライブラリやフレームワークへの依存をカプセル化し、ビジネスロジックから技術的詳細を分離すること。
+- **場所**: `app/Infrastructure`
+
+- **`Repositories` (リポジトリ実装)**: データアクセスに関するドメインインターフェースの具体的な実装。通常、Eloquentモデルが関与します。
+- **`ExternalServicesIntegration` (外部サービス統合)**: 外部APIやサービスを統合するためのコード。
+- **`NotificationServices` (通知サービス)**: メールや通知を送信するためのインフラ。
+- **`Jobs` (キュー管理)**: ジョブキューやワーカーの実装。
+- **`Utilities/Helpers` (ユーティリティとヘルパー)**: インフラ関連のタスクを補助するユーティリティクラスやヘルパー関数。
+
+## はじめに
+
+このボイラープレートを使用して新しいプロジェクトを開始する方法は簡単です。
+`Makefile` に定義されたコマンドを使用すれば、ほとんどの作業を自動化できます。
+
+1.  **リポジトリのクローン:**
+    ```bash
+    git clone https://github.com/your-username/laravel-ddd-boilerplate.git your-project-name
+    cd your-project-name
+    ```
+
+2.  **プロジェクトのセットアップ:**
+    次の `make` コマンドを実行すると、Dockerコンテナのビルド、依存関係のインストール、`.env` ファイルの生成、アプリケーションキーの生成、データベースのマイグレーションまで、すべての初期設定が完了します。
+
+    ```bash
+    make setup
+    ```
+    これで、ブラウザで `http://localhost:8080` にアクセスしてアプリケーションを確認できます。
+
+## Makefileコマンド
+
+よく使われるコマンドが `Makefile` に定義されており、開発の生産性を向上させます。
+
+### Docker管理
+- `make up`: Dockerコンテナを起動します。
+- `make down`: Dockerコンテナを停止します。
+- `make restart`: Dockerコンテナを再起動します。
+- `make shell`: `app` サービスの `bash` シェルにアクセスします。
+- `make logs`: すべてのコンテナのログをリアルタイムで確認します。
+
+### Laravel Artisan および Composer
+- `make artisan c="<command>"`: Artisanコマンドを実行します。(例: `make artisan c="queue:work"`)
+- `make migrate`: データベースのマイグレーションを実行します。
+- `make fresh`: データベースを初期化し、シーディングを実行します。
+- `make composer c="<command>"`: Composerコマンドを実行します。(例: `make composer c="require package/name"`)
+
+### テスト
+- `make test`: PHPUnitテストを実行します。
+- `make test-parallel`: テストを並列実行して高速化します。
+- `make test-coverage`: テストカバレッジを確認します。
+- `make test-unit`: ユニットテストのみを実行します。
+- `make test-feature`: フィーチャーテストのみを実行します。
+
+### コード品質
+- `make pint`: Laravel Pintを使用してコードスタイルを自動で修正します。
+- `make pint-check`: コードスタイルが標準に準拠しているか確認します。（修正は行わない）
+- `make phpstan`: PHPStanを使用して静的解析を実行します。
+- `make rector`: Rectorを使用してコードを自動でリファクタリングします。
+- `make rector-dry`: Rectorのリファクタリング結果をプレビューします。（修正は行わない）
+
+### CI/CD
+- `make ci`: すべてのコード品質チェックとテストを実行します。（CIパイプライン用）
+- `make ci-fix`: コードスタイルの修正とリファクタリングを自動で適用します。
+
+## ライセンス
+
+このプロジェクトは [MITライセンス](LICENSE) に基づいています。
