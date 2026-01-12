@@ -65,8 +65,15 @@ jobs:
       - name: Run Pint
         run: vendor/bin/pint --test
 
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            **/*.php
+
       - name: Run PHPStan
-        run: vendor/bin/phpstan analyse --configuration=phpstan.neon
+        run: vendor/bin/phpstan analyse --memory-limit=512M --configuration=phpstan.neon
 
       - name: Run PHPUnit
         run: php artisan test --parallel --no-coverage
