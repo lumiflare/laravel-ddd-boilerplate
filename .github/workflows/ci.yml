@@ -1,0 +1,72 @@
+name: Laravel CI
+
+on:
+  push:
+    branches:
+      - '**'
+    tags:
+      - '**'
+  pull_request:
+    branches:
+      - "**"
+
+jobs:
+  laravel-ci:
+    runs-on: ubuntu-latest
+
+    container:
+      image: php:8.4-fpm-bookworm
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Prepare environment
+        run: cp .env.ci .env
+
+      - name: Install system dependencies
+        run: |
+          apt-get update && apt-get install -y \
+            git \
+            unzip \
+            libzip-dev \
+            libsqlite3-dev \
+          && docker-php-ext-install \
+            pdo \
+            pdo_sqlite \
+            pdo_mysql \
+            zip \
+            bcmath
+
+      - name: Install Composer
+        run: |
+          curl -sS https://getcomposer.org/installer \
+          | php -- --install-dir=/usr/local/bin --filename=composer
+
+      - name: Cache Composer packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            composer-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Create SQLite database
+        run: |
+          mkdir -p database
+          touch database/database.sqlite
+
+      - name: Run migrations
+        run: php artisan migrate --force
+
+      - name: Run Pint
+        run: vendor/bin/pint --test
+
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyse --memory-limit=512M --configuration=phpstan.neon
+
+      - name: Run PHPUnit
+        run: php artisan test --parallel --no-coverage
