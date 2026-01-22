@@ -95,10 +95,10 @@
 - `make logs`: すべてのコンテナのログをリアルタイムで確認します。
 
 ### Laravel Artisan および Composer
-- `make artisan c="<command>"`: Artisanコマンドを実行します。(例: `make artisan c="queue:work"`)
+- `make artisan"`: Artisanコマンドを実行します。(例: `make artisan queue:work`)
 - `make migrate`: データベースのマイグレーションを実行します。
 - `make fresh`: データベースを初期化し、シーディングを実行します。
-- `make composer c="<command>"`: Composerコマンドを実行します。(例: `make composer c="require package/name"`)
+- `make composer`: Composerコマンドを実行します。(例: `make composer require package/name`)
 
 ### テスト
 - `make test`: PHPUnitテストを実行します。
